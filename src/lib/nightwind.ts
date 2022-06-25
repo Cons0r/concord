@@ -14,7 +14,7 @@ type Typewind = {
     getDark: () => boolean,
     mount: () => void
 }
-import nightwind from 'nightwind/helper'
+import nightwind from 'nightwind/helper.js'
 const nwind: Typewind = nightwind
 nwind.dark = writable(false)
 nwind.valDark = () => {
