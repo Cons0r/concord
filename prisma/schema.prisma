@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(cuid())
+  username   String    @unique
+  token      String    @unique @default(cuid()) // This prevents users from setting their tokens to user ids, in case you have routes such as /u/:[id]
+  hash       String
+  createdAt  DateTime  @default(now())
+  messages   Message[]
+  followers Follow[] @relation("following")
+  following Follow[] @relation("follower")
+}
+
+model Follow {
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@id([followerId, followingId])
+}
+
+model Message {
+  id     Int @id @default(autoincrement())
+  text   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  createdAt DateTime @default(now())
+}
